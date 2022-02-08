@@ -2,6 +2,7 @@
 Installs the qdevplot package
 """
 
+import pandas
 from setuptools import setup, find_packages
 from pathlib import Path
 
@@ -9,7 +10,10 @@ import versioneer
 
 readme_file_path = Path(__file__).absolute().parent / "README.md"
 
-required_packages = ['opencensus-ext-azure']
+required_packages = ['matplotlib>=3.0.0',
+                     'numpy>=1.12.0',
+                     'pandas'
+                    ]
 package_data = {"qdevplot": ["conf/telemetry.ini"] }
 
 
