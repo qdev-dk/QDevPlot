@@ -1,0 +1,21 @@
+qdevplot.telemetry package
+==========================
+
+Submodules
+----------
+
+qdevplot.telemetry.telemetry\_functions module
+----------------------------------------------
+
+.. automodule:: qdevplot.telemetry.telemetry_functions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qdevplot.telemetry
+   :members:
+   :undoc-members:
+   :show-inheritance:

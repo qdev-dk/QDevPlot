@@ -1,0 +1,10 @@
+qdevplot.conf package
+=====================
+
+Module contents
+---------------
+
+.. automodule:: qdevplot.conf
+   :members:
+   :undoc-members:
+   :show-inheritance:

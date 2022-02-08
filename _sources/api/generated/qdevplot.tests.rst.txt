@@ -1,0 +1,37 @@
+qdevplot.tests package
+======================
+
+Submodules
+----------
+
+qdevplot.tests.conftest module
+------------------------------
+
+.. automodule:: qdevplot.tests.conftest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qdevplot.tests.test\_config module
+----------------------------------
+
+.. automodule:: qdevplot.tests.test_config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qdevplot.tests.test\_installation module
+----------------------------------------
+
+.. automodule:: qdevplot.tests.test_installation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qdevplot.tests
+   :members:
+   :undoc-members:
+   :show-inheritance:

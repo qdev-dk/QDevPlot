@@ -1,0 +1,39 @@
+qdevplot package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 10
+
+   qdevplot.conf
+   qdevplot.telemetry
+   qdevplot.tests
+
+Submodules
+----------
+
+qdevplot.hello\_world module
+----------------------------
+
+.. automodule:: qdevplot.hello_world
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qdevplot.plotfunctions module
+-----------------------------
+
+.. automodule:: qdevplot.plotfunctions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qdevplot
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+qdevplot
+========
+
+.. toctree::
+   :maxdepth: 10
+
+   qdevplot
