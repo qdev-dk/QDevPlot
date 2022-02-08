@@ -2,7 +2,6 @@
 Installs the qdevplot package
 """
 
-import pandas
 from setuptools import setup, find_packages
 from pathlib import Path
 
