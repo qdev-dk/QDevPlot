@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = "qdevplot"
 copyright = "Rasmus Bjerregaard Christensen"
 author = "Rasmus Bjerregaard Christensen"
-project_description = "plot functions for QDev[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[P"
+project_description = "plot functions for QDev"
 
 # -- General configuration ---------------------------------------------------
 

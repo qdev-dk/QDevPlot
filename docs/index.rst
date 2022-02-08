@@ -2,8 +2,7 @@
 qdevplot
 *****************************************************************
 
-plot functions for QDev[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[P
-
+plot functions for QDev
 
 Documentation
 -------------
