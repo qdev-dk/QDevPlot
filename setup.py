@@ -25,7 +25,7 @@ setup(
     install_requires=required_packages,
     author= "Rasmus Bjerregaard Christensen",
     author_email="rbcmail@gmail.com",
-    description="Plot functions for QDev" 
+    description="Plot functions for QDev",
     long_description=readme_file_path.open().read(),
     long_description_content_type="text/markdown",
     license="",
