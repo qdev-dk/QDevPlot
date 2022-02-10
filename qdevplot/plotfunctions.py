@@ -15,13 +15,15 @@ params = {'legend.fontsize': 16,
          'ytick.labelsize':16}
 pylab.rcParams.update(params)
 
-def plot_scatter_linecut(x, y, z, idc, ylist, x_label=None, y_label=None, cb_label=None):
+def plot_scatter_linecut(x, y, z, xmeas=None, ymeas=None,
+                         ylist=None, x_label=None, y_label=None,
+                         cb_label=None):
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, sharey=False, constrained_layout=True)
-    xmin = x.min()
-    xmax = x.max()
     
-    df = data_array_to_sorted_cordinate_df(x, y, z, idc, x_label=x_label, y_label=y_label, z_label=cb_label)
+    df = data_array_to_sorted_cordinate_df(x, y, z, xnew=xmeas, ynew=ymeas, x_label=x_label, y_label=y_label, z_label=cb_label)
     ax1, cb = df_to_scatter(df, ax = ax1)
+    xmin = df.iloc[:, 0].min()
+    xmax = df.iloc[:, 0].max()
     for yval in ylist:
         ax1 = add_line_to_plot(ax1,(xmin,xmax), yval)
     
@@ -35,8 +37,9 @@ def add_line_to_plot(ax, x, y):
     return ax
 
 
-def plot_scatter(x, y, z, idc, x_label=None, y_label=None, cb_label=None):
-    df = data_array_to_sorted_cordinate_df(x, y, z, idc, x_label=x_label, y_label=y_label, z_label=cb_label)
+def plot_scatter(x, y, z, xmeas=None, ymeas=None, x_label=None, y_label=None, cb_label=None):
+    df = data_array_to_sorted_cordinate_df(x, y, z, xnew=xmeas, ynew=ymeas,
+                                           x_label=x_label, y_label=y_label, z_label=cb_label)
     ax, cb = df_to_scatter(df)
     return ax, cb
 
@@ -68,8 +71,9 @@ def df_to_scatter(df, x_label=None, y_label=None, cb_label=None, ax=None):
     
     return ax, cb
 
-def plot_line_cuts(x, y, z, idc, ylist, x_label=None, y_label=None, cb_label=None, ax=None):
-    df = data_array_to_sorted_cordinate_df(x, y, z, idc, x_label=x_label, y_label=y_label, z_label=cb_label)
+def plot_line_cuts(x, y, z, xmeas=None, ymeas=None, ylist=None, x_label=None, y_label=None, cb_label=None, ax=None):
+    df = data_array_to_sorted_cordinate_df(x, y, z, xnew=xmeas, ynew=ymeas,
+    x_label=x_label, y_label=y_label, z_label=cb_label)
     ax = linecuts(df,ylist,ax=ax)
     return ax
 
@@ -101,7 +105,7 @@ def linecuts(df,ylist, x_label=None, y_label=None, cb_label=None, ax=None):
     #plt.ylim(0,4.5)
     return ax
     
-def data_array_to_sorted_cordinate_df(x, y, z, ynew,
+def data_array_to_sorted_cordinate_df(x, y, z, xnew=None, ynew=None,
                                       x_label:str = 'X',
                                       y_label:str = 'Y',
                                       z_label:str = 'Z'):
@@ -111,9 +115,17 @@ def data_array_to_sorted_cordinate_df(x, y, z, ynew,
 
     
     z_data = []
-    for ix, vx in enumerate(x):
+    for ix, vx in enumerate(x): 
         for iy, vy in enumerate(y):
-            z_data.append([vx,ynew[iy][ix],z[iy][ix]])
+            if xnew is None:
+                xij = vx
+            else:
+                xij = xnew[iy][ix]
+            if ynew is None:
+                yij = vy
+            else:
+                yij = ynew[iy][ix]
+            z_data.append([xij,yij,z[iy][ix]])
     df =pd.DataFrame(z_data,columns = [x_label, y_label, z_label])
     df = df.dropna()
     df_s = df.sort_values([x_label, y_label])
