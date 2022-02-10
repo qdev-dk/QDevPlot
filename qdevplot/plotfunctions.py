@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import interpolate
 import matplotlib.pylab as pylab
+from typing import Optional
+from functools import partial
+from matplotlib.ticker import FuncFormatter
 
 params = {'legend.fontsize': 16,
           'figure.figsize': (4, 4),
@@ -127,3 +130,51 @@ def if_not_ax_make_ax(ax):
     if ax is None:
        ax = plt.axes()
     return ax
+
+def set_real_aspect(ax):
+    ylim = ax.get_ylim()
+    xlim = ax.get_xlim()
+    aspect = (ylim[1]- ylim[0])/(xlim[1]- xlim[0])
+    ax.set_aspect(aspect)
+    return ax
+
+def change_unit_axis(axes, axis, scale:float, newlabel:Optional[str] = None):
+
+    formatter = FuncFormatter(
+                              partial(unit_scale,scale=scale)
+                             )
+
+    if axis in ['x', 'X']:
+        axes.xaxis.set_major_formatter(formatter)
+        if newlabel is None:
+            label = axes.get_xlabel() 
+            axes.set_xlabel(f'{label}{scale}')
+        else:
+            axes.set_xlabel(newlabel)        
+    
+    elif axis in ['y', 'Y']:
+        axes.yaxis.set_major_formatter(formatter)
+        if newlabel is None:
+            label = axes.get_ylabel() 
+            axes.set_ylabel(f'{label}{scale}')
+        else:
+            axes.set_ylabel(newlabel)
+
+    elif axis in ['cb', 'colorbar', 'z', 'Z']:
+        axes.formatter = formatter
+        axes.update_ticks()
+        if newlabel is None:
+            label = axes.get_label() 
+            axes.set_label(f'{label}{scale}')
+        else:
+            axes.set_label(newlabel)
+
+    return axes
+
+def unit_scale(x, pos, scale:float):
+
+    return '%1.1f' % (x/scale)
+
+
+
+
