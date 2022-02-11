@@ -15,6 +15,29 @@ params = {'legend.fontsize': 16,
          'ytick.labelsize':16}
 pylab.rcParams.update(params)
 
+
+def plot_scatter_linescoop(x, y, z, xmeas=None, ymeas=None,
+                           ivallist=None, x_label=None, y_label=None,
+                           cb_label=None):
+    _, (ax1, ax2) = plt.subplots(2, 1, sharex=True, sharey=False, constrained_layout=True)
+    
+    df = data_array_to_sorted_cordinate_df(x, y, z, xnew=xmeas, ynew=ymeas,
+                                           x_label=x_label, y_label=y_label,
+                                           z_label=cb_label)
+    ax1, cb = df_to_scatter(df, ax=ax1)
+    xmin = df.iloc[:, 0].min()
+    xmax = df.iloc[:, 0].max()
+    legend_list=[]
+    for ival in ivallist:
+        legend_list.append(str(ival))
+        ax1 = add_line_to_plot(ax1,(xmin,xmax), ival[0])
+        ax1 = add_line_to_plot(ax1,(xmin,xmax), ival[1])
+        ax2 = plot_line_scoop_from_df(df, ival, ax=ax2)
+    ax2.legend(legend_list)
+    ax1.set_xlabel('')
+    return ax1, cb, ax2
+
+
 def plot_scatter_linecut(x, y, z, xmeas=None, ymeas=None,
                          ylist=None, x_label=None, y_label=None,
                          cb_label=None):
@@ -104,16 +127,40 @@ def linecuts(df,ylist, x_label=None, y_label=None, cb_label=None, ax=None):
     plt.grid()
     #plt.ylim(0,4.5)
     return ax
-    
+
+
+def plot_line_scoop(x, y, z, xmeas=None, ymeas=None,
+                    ival=None, x_label=None, y_label=None,
+                    cb_label=None, ax=None):
+    df = data_array_to_sorted_cordinate_df(x, y, z, xnew=xmeas, ynew=ymeas,
+    x_label=x_label, y_label=y_label, z_label=cb_label)
+    ax = plot_line_scoop_from_df(df, ival, ax=ax)
+    return ax
+
+
+def plot_line_scoop_from_df(df, ival, ax):
+    df_plot = line_scoop(df, ival)
+    col_names = list(df_plot.columns)
+    df_plot.plot(col_names[0], col_names[1],
+                 linestyle='--', marker='o', ax = ax)
+    #ax.legend([str(ival)])
+    return ax
+
+
+def line_scoop(df, ival):
+    col_names = list(df.columns)
+    df_plot = df[(df[col_names[1]] >= ival[0]) & (df[col_names[1]]<=ival[1])].sort_values(col_names[0])
+    return df_plot[[col_names[0], col_names[2]]]
+
+
 def data_array_to_sorted_cordinate_df(x, y, z, xnew=None, ynew=None,
-                                      x_label:str = 'X',
-                                      y_label:str = 'Y',
-                                      z_label:str = 'Z'):
+                                      x_label: str = 'X',
+                                      y_label: str = 'Y',
+                                      z_label: str = 'Z'):
     if x_label is None: x_label = 'X'
     if y_label is None: y_label = 'Y'
     if z_label is None: z_label = 'Z'
 
-    
     z_data = []
     for ix, vx in enumerate(x): 
         for iy, vy in enumerate(y):
