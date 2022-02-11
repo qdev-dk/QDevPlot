@@ -9,7 +9,7 @@ The idea is to share plot functions inside the group and with a future version o
 You can install QDevPlot by:
 
 ```bash
-$ git clone https://github.com/qdev-dk/.git
+$ git clone https://github.com/qdev-dk/QDevPlot.git
 $ cd QDevPlot
 $ pip install -e .
 ```
