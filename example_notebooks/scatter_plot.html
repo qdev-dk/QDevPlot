@@ -46,6 +46,7 @@
 <li class="toctree-l3"><a class="reference internal" href="hello_world.html">Hello, world!</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Scatter plot with line cuts</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Note-on-fontsize">Note on fontsize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plotting-scatter-and-line-cuts-(scoop-version)">plotting scatter and line cuts (scoop version)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#plotting-scatter-and-line-cuts">plotting scatter and line cuts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Note-on-customisation">Note on customisation</a></li>
 </ul>
@@ -355,11 +356,12 @@ div.rendered_html tbody tr:hover {
 <h1>Scatter plot with line cuts<a class="headerlink" href="#Scatter-plot-with-line-cuts" title="Permalink to this headline">¶</a></h1>
 <p>This notebook shows how to make a scatter plot with linecuts using the qdevplot library. The qdevplot library is a collection of nice plots used in Qdev wrapped in to a function for easy sharring and reuse.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qdevplot.plotfunctions</span> <span class="k">as</span> <span class="nn">qp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
@@ -367,7 +369,7 @@ div.rendered_html tbody tr:hover {
 <h2>Note on fontsize<a class="headerlink" href="#Note-on-fontsize" title="Permalink to this headline">¶</a></h2>
 <p>Instead of setting the fontsize individuely it is eassier to change the default sizes. The bellow defaults are recomended for powerpoint precentations. If you use this defaults it is important that you do not resize the figure inside powerpoint, but instead change the figuresize befor exporting</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">pylab</span>
@@ -383,28 +385,28 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>This notebook deals with a situation where you have measured a 2d quantity Z and want to plot is as a heatmap as a function of X and Ymea, where Ymeas is also a measured 2d quantity depending on Y. Thus we make some data</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span><span class="o">*</span><span class="mf">0.1</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span><span class="o">*</span><span class="mf">0.1</span>
 <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">xx</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">yy</span><span class="p">)</span>
+<span class="n">Xmeas</span> <span class="o">=</span> <span class="n">xx</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">yy</span> <span class="o">+</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">xx</span><span class="o">**</span><span class="mi">3</span>
 <span class="n">Ymeas</span> <span class="o">=</span> <span class="n">yy</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">xx</span> <span class="o">+</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">xx</span><span class="o">**</span><span class="mi">3</span>
 </pre></div>
 </div>
 </div>
 </section>
-<section id="plotting-scatter-and-line-cuts">
-<h2>plotting scatter and line cuts<a class="headerlink" href="#plotting-scatter-and-line-cuts" title="Permalink to this headline">¶</a></h2>
+<section id="plotting-scatter-and-line-cuts-(scoop-version)">
+<h2>plotting scatter and line cuts (scoop version)<a class="headerlink" href="#plotting-scatter-and-line-cuts-(scoop-version)" title="Permalink to this headline">¶</a></h2>
 <p>To make the scatter and line cuts plot we sipmply pass the four arrays ant the list line cutst to the function plot_scatter_linecut</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cut_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.2</span><span class="p">]</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter_linecut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">Ymeas</span><span class="p">,</span> <span class="n">ylist</span> <span class="o">=</span>  <span class="n">cut_list</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
-<br/></pre></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax1</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter_linescoop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">ymeas</span><span class="o">=</span><span class="n">Ymeas</span><span class="p">,</span> <span class="n">xmeas</span><span class="o">=</span><span class="n">Xmeas</span><span class="p">,</span> <span class="n">ivallist</span> <span class="o">=</span><span class="p">[(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.51</span><span class="p">),(</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.61</span><span class="p">)],</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -414,13 +416,17 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/example_notebooks_scatter_plot_7_0.png" src="../_images/example_notebooks_scatter_plot_7_0.png" />
 </div>
 </div>
-<p>We can also just plot the scatter plot using plot_ scatter</p>
+</section>
+<section id="plotting-scatter-and-line-cuts">
+<h2>plotting scatter and line cuts<a class="headerlink" href="#plotting-scatter-and-line-cuts" title="Permalink to this headline">¶</a></h2>
+<p>To make the scatter and line cuts plot we sipmply pass the four arrays ant the list line cutst to the function plot_scatter_linecut</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span><span class="p">,</span> <span class="n">cb</span><span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">Ymeas</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
-</pre></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cut_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.2</span><span class="p">]</span>
+<span class="n">ax1</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter_linecut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">ymeas</span><span class="o">=</span><span class="n">Ymeas</span><span class="p">,</span> <span class="n">xmeas</span><span class="o">=</span><span class="n">Xmeas</span><span class="p">,</span> <span class="n">ylist</span> <span class="o">=</span>  <span class="n">cut_list</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -430,12 +436,12 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/example_notebooks_scatter_plot_9_0.png" src="../_images/example_notebooks_scatter_plot_9_0.png" />
 </div>
 </div>
-<p>Or we can plot the linecut using plot_line_cuts</p>
+<p>We can also just plot the scatter plot using plot_ scatter</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_line_cuts</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">Ymeas</span><span class="p">,</span> <span class="n">ylist</span> <span class="o">=</span>  <span class="n">cut_list</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span><span class="p">,</span> <span class="n">cb</span><span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">ymeas</span><span class="o">=</span><span class="n">Ymeas</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -446,16 +452,32 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/example_notebooks_scatter_plot_11_0.png" src="../_images/example_notebooks_scatter_plot_11_0.png" />
 </div>
 </div>
+<p>Or we can plot the linecut using plot_line_cuts</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_line_cuts</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">ymeas</span><span class="o">=</span><span class="n">Ymeas</span><span class="p">,</span> <span class="n">ylist</span> <span class="o">=</span>  <span class="n">cut_list</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_scatter_plot_13_0.png" src="../_images/example_notebooks_scatter_plot_13_0.png" />
+</div>
+</div>
 </section>
 <section id="Note-on-customisation">
 <h2>Note on customisation<a class="headerlink" href="#Note-on-customisation" title="Permalink to this headline">¶</a></h2>
 <p>All the plot functions returns the axis objekts of the plot, making it easy to modify limits, labels, etc.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cut_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.2</span><span class="p">]</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter_linecut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">Ymeas</span><span class="p">,</span> <span class="n">ylist</span> <span class="o">=</span>  <span class="n">cut_list</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter_linecut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">ymeas</span><span class="o">=</span><span class="n">Ymeas</span><span class="p">,</span> <span class="n">ylist</span> <span class="o">=</span>  <span class="n">cut_list</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
 <span class="n">cb</span><span class="o">.</span><span class="n">mappable</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.6</span><span class="p">)</span>
 <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;Some Label&#39;</span><span class="p">)</span>
 <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.6</span><span class="p">)</span>
@@ -466,25 +488,66 @@ div.rendered_html tbody tr:hover {
 <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Your Y label&#39;</span><span class="p">)</span>
 <span class="n">legend_handes</span> <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
 <span class="n">ax2</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">legend_handes</span><span class="p">[</span><span class="mi">0</span><span class="p">],[</span><span class="s1">&#39;hep&#39;</span><span class="p">,</span><span class="s1">&#39;aaa&#39;</span><span class="p">])</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x1e19ffa06d0&gt;
+&lt;matplotlib.legend.Legend at 0x272f25f6610&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/example_notebooks_scatter_plot_13_1.png" src="../_images/example_notebooks_scatter_plot_13_1.png" />
+<img alt="../_images/example_notebooks_scatter_plot_15_1.png" src="../_images/example_notebooks_scatter_plot_15_1.png" />
 </div>
 </div>
+<section id="Changing-units-on-an-axis">
+<h3>Changing units on an axis<a class="headerlink" href="#Changing-units-on-an-axis" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cut_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.2</span><span class="p">]</span>
+<span class="n">ax1</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter_linecut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">ymeas</span><span class="o">=</span><span class="n">Ymeas</span><span class="p">,</span> <span class="n">ylist</span> <span class="o">=</span>  <span class="n">cut_list</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">change_unit_axis</span><span class="p">(</span><span class="n">ax1</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="s1">&#39;GateA(mV)&#39;</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">change_unit_axis</span><span class="p">(</span><span class="n">ax2</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="s1">&#39;(mV)&#39;</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">change_unit_axis</span><span class="p">(</span><span class="n">ax2</span><span class="p">,</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="s1">&#39;GateB(mV)&#39;</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">change_unit_axis</span><span class="p">(</span><span class="n">cb</span><span class="p">,</span><span class="s1">&#39;cb&#39;</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="s1">&#39;(mV)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_scatter_plot_17_0.png" src="../_images/example_notebooks_scatter_plot_17_0.png" />
+</div>
+</div>
+<p>Convenience function to set aspect ratio to reflect the distance (assuming that the metric for x and y axis are the same)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span><span class="p">,</span> <span class="n">cb</span><span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">ymeas</span><span class="o">=</span><span class="n">Ymeas</span><span class="p">,</span> <span class="n">x_label</span><span class="o">=</span><span class="s1">&#39;bla&#39;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">qp</span><span class="o">.</span><span class="n">set_real_aspect</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/example_notebooks_scatter_plot_19_0.png" src="../_images/example_notebooks_scatter_plot_19_0.png" />
+</div>
+</div>
+</section>
 </section>
 </section>
 
