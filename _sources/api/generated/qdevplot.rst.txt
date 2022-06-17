@@ -22,6 +22,14 @@ qdevplot.hello\_world module
    :undoc-members:
    :show-inheritance:
 
+qdevplot.legacyqcodes module
+----------------------------
+
+.. automodule:: qdevplot.legacyqcodes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 qdevplot.plotfunctions module
 -----------------------------
 

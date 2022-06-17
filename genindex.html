@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="En" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -78,6 +79,7 @@
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
@@ -103,6 +105,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.data_array_to_sorted_cordinate_df">data_array_to_sorted_cordinate_df() (in module qdevplot.plotfunctions)</a>
+</li>
+      <li><a href="api/generated/qdevplot.html#qdevplot.legacyqcodes.df_to_pcolor">df_to_pcolor() (in module qdevplot.legacyqcodes)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -156,10 +160,14 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.line_scoop">line_scoop() (in module qdevplot.plotfunctions)</a>
+      <li><a href="api/generated/qdevplot.html#qdevplot.legacyqcodes.legacy_qcodes_plot">legacy_qcodes_plot() (in module qdevplot.legacyqcodes)</a>
+</li>
+      <li><a href="api/generated/qdevplot.html#qdevplot.legacyqcodes.legacy_vna_plot">legacy_vna_plot() (in module qdevplot.legacyqcodes)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.line_scoop">line_scoop() (in module qdevplot.plotfunctions)</a>
+</li>
       <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.linecuts">linecuts() (in module qdevplot.plotfunctions)</a>
 </li>
       <li><a href="api/generated/qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.LOGGING_SEPARATOR">LOGGING_SEPARATOR (in module qdevplot.telemetry.telemetry_functions)</a>
@@ -179,6 +187,8 @@
         <li><a href="api/generated/qdevplot.conf.html#module-qdevplot.conf">qdevplot.conf</a>
 </li>
         <li><a href="api/generated/qdevplot.html#module-qdevplot.hello_world">qdevplot.hello_world</a>
+</li>
+        <li><a href="api/generated/qdevplot.html#module-qdevplot.legacyqcodes">qdevplot.legacyqcodes</a>
 </li>
         <li><a href="api/generated/qdevplot.html#module-qdevplot.plotfunctions">qdevplot.plotfunctions</a>
 </li>
@@ -205,14 +215,16 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/qdevplot.html#qdevplot.legacyqcodes.plot_legacy_qcodes_linescoop">plot_legacy_qcodes_linescoop() (in module qdevplot.legacyqcodes)</a>
+</li>
       <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.plot_line_cuts">plot_line_cuts() (in module qdevplot.plotfunctions)</a>
 </li>
       <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.plot_line_scoop">plot_line_scoop() (in module qdevplot.plotfunctions)</a>
 </li>
-      <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.plot_line_scoop_from_df">plot_line_scoop_from_df() (in module qdevplot.plotfunctions)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.plot_line_scoop_from_df">plot_line_scoop_from_df() (in module qdevplot.plotfunctions)</a>
+</li>
       <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.plot_scatter">plot_scatter() (in module qdevplot.plotfunctions)</a>
 </li>
       <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.plot_scatter_linecut">plot_scatter_linecut() (in module qdevplot.plotfunctions)</a>
@@ -244,6 +256,13 @@
 
       <ul>
         <li><a href="api/generated/qdevplot.html#module-qdevplot.hello_world">module</a>
+</li>
+      </ul></li>
+      <li>
+    qdevplot.legacyqcodes
+
+      <ul>
+        <li><a href="api/generated/qdevplot.html#module-qdevplot.legacyqcodes">module</a>
 </li>
       </ul></li>
       <li>
@@ -300,10 +319,20 @@
   </ul></td>
 </tr></table>
 
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/qdevplot.html#qdevplot.legacyqcodes.read_legacy_qcodes">read_legacy_qcodes() (in module qdevplot.legacyqcodes)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/qdevplot.html#qdevplot.plotfunctions.set_real_aspect">set_real_aspect() (in module qdevplot.plotfunctions)</a>
+</li>
+      <li><a href="api/generated/qdevplot.html#qdevplot.legacyqcodes.shaped_data_from_df">shaped_data_from_df() (in module qdevplot.legacyqcodes)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

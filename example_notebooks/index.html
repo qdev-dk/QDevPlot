@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="En" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -43,6 +44,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples of using qdevplot</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-examples">Basic examples</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="hello_world.html">Hello, world!</a></li>
+<li class="toctree-l3"><a class="reference internal" href="legacy_file_format.html">Plotting Leagcy QCoDeS csv files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="scatter_plot.html">Scatter plot with line cuts</a></li>
 </ul>
 </li>
@@ -99,19 +101,26 @@
 }
 </style>
 <section id="examples-of-using-qdevplot">
-<h1>Examples of using qdevplot<a class="headerlink" href="#examples-of-using-qdevplot" title="Permalink to this headline">¶</a></h1>
+<h1>Examples of using qdevplot<a class="headerlink" href="#examples-of-using-qdevplot" title="Permalink to this heading">¶</a></h1>
 <p>Here are examples of using qdevplot in the format of rendered Jupyter notebooks.
 To experiment with running the example notebooks, please download them directly
 from the qdevplot git repository.</p>
 <section id="basic-examples">
-<h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this headline">¶</a></h2>
+<h2>Basic examples<a class="headerlink" href="#basic-examples" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="hello_world.html">Hello, world!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="legacy_file_format.html">Plotting Leagcy QCoDeS csv files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="legacy_file_format.html#Plotting-VNA-data">Plotting VNA data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="legacy_file_format.html#Getting-the-data-as-a-pandas-data-frame">Getting the data as a pandas data frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="legacy_file_format.html#Plotting-pcollor-together-with-a-linescoop">Plotting pcollor together with a linescoop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="legacy_file_format.html#Plotting-only-a-linescoop">Plotting only a linescoop</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="scatter_plot.html">Scatter plot with line cuts</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="scatter_plot.html#Note-on-fontsize">Note on fontsize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_plot.html#plotting-scatter-and-line-cuts-(scoop-version)">plotting scatter and line cuts (scoop version)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scatter_plot.html#plotting-scatter-and-line-cuts">plotting scatter and line cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scatter_plot.html#plotting-scatter-and-line-cuts(using-nearest-neighbor)">plotting scatter and line cuts(using nearest neighbor)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_plot.html#Note-on-customisation">Note on customisation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="scatter_plot.html#Changing-units-on-an-axis">Changing units on an axis</a></li>
 </ul>
