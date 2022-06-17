@@ -42,7 +42,7 @@ def read_legacy_qcodes(filepath, invertaxes: bool = False):
     df = pd.read_csv(filepath, delimiter='\t', header=1)
     df.rename(columns={df.columns[0]: df.columns[0].split('"')[1::2][0]},
               inplace=True)
-    datashape = (np.int(df.iloc[0][0][1:]), df.iloc[0][1])
+    datashape = (np.int64(df.iloc[0][0][1:]), df.iloc[0][1])
     df.drop(index=df.index[0], axis=0, inplace=True)
     if invertaxes:
         column_names = [df.columns[1], df.columns[0], df.columns[2]]
@@ -86,4 +86,4 @@ def shaped_data_from_df(df, dims, invertaxes: bool = False):
         X, Y = np.meshgrid(data[:, 0][::dims[1]], data[:, 1][:dims[1]])
         Z = data[:, 2].reshape(dims).T
 
-    return X.astype(np.float), Y.astype(np.float), Z.astype(np.float)
+    return X.astype(np.float64), Y.astype(np.float64), Z.astype(np.float64)
