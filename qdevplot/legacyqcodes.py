@@ -33,16 +33,16 @@ def plot_legacy_qcodes_linescoop(filepath, ivallist=None, x_label=None, y_label=
 
 
 def legacy_qcodes_plot(filepath, **kwargs):
-    df, dims = read_legacy_qcodes(filepath)
+    df, dims = read_legacy_qcodes(filepath, **kwargs)
     ax, cb = df_to_pcolor(df, dims, **kwargs)
     return ax, cb
 
 
-def read_legacy_qcodes(filepath, invertaxes: bool = False):
+def read_legacy_qcodes(filepath, invertaxes: bool = False, **kwargs):
     df = pd.read_csv(filepath, delimiter='\t', header=1)
     df.rename(columns={df.columns[0]: df.columns[0].split('"')[1::2][0]},
               inplace=True)
-    datashape = (np.int64(df.iloc[0][0][1:]), df.iloc[0][1])
+    datashape = (np.int64(df.iloc[0][0][1:]), np.int64(df.iloc[0][1]))
     df.drop(index=df.index[0], axis=0, inplace=True)
     if invertaxes:
         column_names = [df.columns[1], df.columns[0], df.columns[2]]
