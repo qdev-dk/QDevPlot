@@ -16,6 +16,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -66,9 +67,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">qdevplot API Documentation</a> &raquo;</li>
-      <li>qdevplot</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">qdevplot API Documentation</a></li>
+      <li class="breadcrumb-item active">qdevplot</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -114,24 +115,72 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="qdevplot.telemetry.html">qdevplot.telemetry package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="qdevplot.telemetry.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="qdevplot.telemetry.html#module-qdevplot.telemetry.telemetry_functions">qdevplot.telemetry.telemetry_functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qdevplot.telemetry.html#module-qdevplot.telemetry.telemetry_functions">qdevplot.telemetry.telemetry_functions module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.LOGGING_SEPARATOR"><code class="docutils literal notranslate"><span class="pre">LOGGING_SEPARATOR</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.FORMAT_STRING_DICT"><code class="docutils literal notranslate"><span class="pre">FORMAT_STRING_DICT</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.get_formatter_for_telemetry"><code class="docutils literal notranslate"><span class="pre">get_formatter_for_telemetry()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.flush_telemetry_traces"><code class="docutils literal notranslate"><span class="pre">flush_telemetry_traces()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.start_telemetry"><code class="docutils literal notranslate"><span class="pre">start_telemetry()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="qdevplot.telemetry.html#module-qdevplot.telemetry">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="qdevplot.tests.html">qdevplot.tests package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.conftest">qdevplot.tests.conftest module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_config">qdevplot.tests.test_config module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_installation">qdevplot.tests.test_installation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.conftest">qdevplot.tests.conftest module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.conftest.disable_telemetry"><code class="docutils literal notranslate"><span class="pre">disable_telemetry()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_config">qdevplot.tests.test_config module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.test_config.test_config_sections_and_fields"><code class="docutils literal notranslate"><span class="pre">test_config_sections_and_fields()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_installation">qdevplot.tests.test_installation module</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.test_installation.test_greeter"><code class="docutils literal notranslate"><span class="pre">test_greeter()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.test_installation.test_myadd"><code class="docutils literal notranslate"><span class="pre">test_myadd()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="qdevplot.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qdevplot.html#module-qdevplot.hello_world">qdevplot.hello_world module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qdevplot.html#module-qdevplot.legacyqcodes">qdevplot.legacyqcodes module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qdevplot.html#module-qdevplot.plotfunctions">qdevplot.plotfunctions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qdevplot.html#module-qdevplot.hello_world">qdevplot.hello_world module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.hello_world.greeter"><code class="docutils literal notranslate"><span class="pre">greeter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.hello_world.hello_world"><code class="docutils literal notranslate"><span class="pre">hello_world()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.hello_world.myadd"><code class="docutils literal notranslate"><span class="pre">myadd()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qdevplot.html#module-qdevplot.legacyqcodes">qdevplot.legacyqcodes module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.legacyqcodes.legacy_vna_plot"><code class="docutils literal notranslate"><span class="pre">legacy_vna_plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.legacyqcodes.plot_legacy_qcodes_linescoop"><code class="docutils literal notranslate"><span class="pre">plot_legacy_qcodes_linescoop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.legacyqcodes.legacy_qcodes_plot"><code class="docutils literal notranslate"><span class="pre">legacy_qcodes_plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.legacyqcodes.read_legacy_qcodes"><code class="docutils literal notranslate"><span class="pre">read_legacy_qcodes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.legacyqcodes.df_to_pcolor"><code class="docutils literal notranslate"><span class="pre">df_to_pcolor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.legacyqcodes.shaped_data_from_df"><code class="docutils literal notranslate"><span class="pre">shaped_data_from_df()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qdevplot.html#module-qdevplot.plotfunctions">qdevplot.plotfunctions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.plot_scatter_linescoop"><code class="docutils literal notranslate"><span class="pre">plot_scatter_linescoop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.plot_scatter_linecut"><code class="docutils literal notranslate"><span class="pre">plot_scatter_linecut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.add_line_to_plot"><code class="docutils literal notranslate"><span class="pre">add_line_to_plot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.plot_scatter"><code class="docutils literal notranslate"><span class="pre">plot_scatter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.df_to_scatter"><code class="docutils literal notranslate"><span class="pre">df_to_scatter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.plot_line_cuts"><code class="docutils literal notranslate"><span class="pre">plot_line_cuts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.linecuts"><code class="docutils literal notranslate"><span class="pre">linecuts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.plot_line_scoop"><code class="docutils literal notranslate"><span class="pre">plot_line_scoop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.plot_line_scoop_from_df"><code class="docutils literal notranslate"><span class="pre">plot_line_scoop_from_df()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.line_scoop"><code class="docutils literal notranslate"><span class="pre">line_scoop()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.data_array_to_sorted_cordinate_df"><code class="docutils literal notranslate"><span class="pre">data_array_to_sorted_cordinate_df()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.style_jose"><code class="docutils literal notranslate"><span class="pre">style_jose()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.if_not_ax_make_ax"><code class="docutils literal notranslate"><span class="pre">if_not_ax_make_ax()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.set_real_aspect"><code class="docutils literal notranslate"><span class="pre">set_real_aspect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.change_unit_axis"><code class="docutils literal notranslate"><span class="pre">change_unit_axis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.html#qdevplot.plotfunctions.unit_scale"><code class="docutils literal notranslate"><span class="pre">unit_scale()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="qdevplot.html#module-qdevplot">Module contents</a></li>
 </ul>
 </li>

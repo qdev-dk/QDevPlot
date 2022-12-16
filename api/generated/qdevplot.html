@@ -16,6 +16,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -66,10 +67,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">qdevplot API Documentation</a> &raquo;</li>
-          <li><a href="modules.html">qdevplot</a> &raquo;</li>
-      <li>qdevplot package</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">qdevplot API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="modules.html">qdevplot</a></li>
+      <li class="breadcrumb-item active">qdevplot package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/qdevplot.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -115,15 +116,32 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="qdevplot.telemetry.html">qdevplot.telemetry package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="qdevplot.telemetry.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qdevplot.telemetry.html#module-qdevplot.telemetry.telemetry_functions">qdevplot.telemetry.telemetry_functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qdevplot.telemetry.html#module-qdevplot.telemetry.telemetry_functions">qdevplot.telemetry.telemetry_functions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.LOGGING_SEPARATOR"><code class="docutils literal notranslate"><span class="pre">LOGGING_SEPARATOR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.FORMAT_STRING_DICT"><code class="docutils literal notranslate"><span class="pre">FORMAT_STRING_DICT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.get_formatter_for_telemetry"><code class="docutils literal notranslate"><span class="pre">get_formatter_for_telemetry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.flush_telemetry_traces"><code class="docutils literal notranslate"><span class="pre">flush_telemetry_traces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.telemetry.html#qdevplot.telemetry.telemetry_functions.start_telemetry"><code class="docutils literal notranslate"><span class="pre">start_telemetry()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="qdevplot.telemetry.html#module-qdevplot.telemetry">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="qdevplot.tests.html">qdevplot.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.conftest">qdevplot.tests.conftest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_config">qdevplot.tests.test_config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_installation">qdevplot.tests.test_installation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.conftest">qdevplot.tests.conftest module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.conftest.disable_telemetry"><code class="docutils literal notranslate"><span class="pre">disable_telemetry()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_config">qdevplot.tests.test_config module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.test_config.test_config_sections_and_fields"><code class="docutils literal notranslate"><span class="pre">test_config_sections_and_fields()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests.test_installation">qdevplot.tests.test_installation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.test_installation.test_greeter"><code class="docutils literal notranslate"><span class="pre">test_greeter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qdevplot.tests.html#qdevplot.tests.test_installation.test_myadd"><code class="docutils literal notranslate"><span class="pre">test_myadd()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="qdevplot.tests.html#module-qdevplot.tests">Module contents</a></li>
 </ul>
 </li>
@@ -177,7 +195,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="qdevplot.legacyqcodes.read_legacy_qcodes">
-<span class="sig-prename descclassname"><span class="pre">qdevplot.legacyqcodes.</span></span><span class="sig-name descname"><span class="pre">read_legacy_qcodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invertaxes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qdevplot/legacyqcodes.html#read_legacy_qcodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qdevplot.legacyqcodes.read_legacy_qcodes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">qdevplot.legacyqcodes.</span></span><span class="sig-name descname"><span class="pre">read_legacy_qcodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invertaxes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qdevplot/legacyqcodes.html#read_legacy_qcodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qdevplot.legacyqcodes.read_legacy_qcodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
