@@ -1,10 +1,14 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy import interpolate
+import numpy as np
 import matplotlib.pylab as pylab
+from scipy import interpolate
 from typing import Optional
 from functools import partial
 from matplotlib.ticker import FuncFormatter
+from qcodes.dataset.plotting import plot_dataset
+from qdevplot.linebuilder import LineBuilder
+
 
 params = {
     "legend.fontsize": 16,
@@ -332,3 +336,221 @@ def change_unit_axis(axes, axis, scale: float, newlabel: Optional[str] = None):
 def unit_scale(x, pos, scale: float):
 
     return "%1.1f" % (x / scale)
+
+
+def line_cut_qcodes_data(data, p1, p2, delta):
+    _, (ax1, ax2) = plt.subplots(
+        1, 2, sharex=False, sharey=False, constrained_layout=True
+    )
+    df = data.to_pandas_dataframe().reset_index()
+    plot_dataset(data, axes=ax1)
+    ax1.plot([p1[0], p2[0]], [p1[1], p2[1]], "--", color="r")
+    col_names = list(df.columns)
+    paramspecs = data.paramspecs
+    labels = [
+        f"{paramspecs[col_name].label} ({paramspecs[col_name].unit})"
+        for col_name in col_names
+    ]
+    plot_line_scoop_from_df_points(df, p1, p2, delta, ax=ax2, labels=labels)
+
+
+def plot_line_scoop_from_df_points(df, p1, p2, delta, ax=None, labels=None):
+    a, b = get_line_from_two_points(p1, p2)
+    ax = plot_line_scoop_from_df_line(
+        df,
+        a,
+        b,
+        delta,
+        ax=ax,
+        labels=labels,
+        xlim=(min(p1[0], p2[0]), max(p1[0], p2[0])),
+        ylim=(min(p1[1], p2[1]), max(p1[1], p2[1])),
+    )
+    return ax
+
+
+def plot_line_scoop_from_df_line(
+    df,
+    a,
+    b,
+    delta,
+    ax=None,
+    labels=None,
+    xlim=(-np.inf, np.inf),
+    ylim=(-np.inf, np.inf),
+):
+    ax = if_not_ax_make_ax(ax)
+    df_plot = get_scoop_line(df, a, b, delta, xlim=xlim, ylim=ylim)
+    print(df_plot.head())
+    dist_to_point = np.array(
+        [
+            [abs(x * int(x > 0)), abs(x * int(x <= 0))]
+            for x in df_plot["distsign"].values
+        ]
+    ).T
+    col_names = list(df_plot.columns)
+    df_plot.plot(
+        col_names[0],
+        col_names[2],
+        linestyle="--",
+        marker="o",
+        ax=ax,
+        yerr=dist_to_point,
+    )
+    ax.legend(f"t({col_names[0]} + {a:.2f}{col_names[1]}) + {b:.2f}{col_names[1]}")
+    ax.set_title(f"t({col_names[0]} + {a:.2f}{col_names[1]}) + {b:.2f}{col_names[1]}")
+    if labels:
+        ax.set_xlabel(f"t({labels[0]} + {a:.2f}{labels[1]}) + {b:.2f}{labels[1]}")
+    else:
+        ax.set_xlabel("t")
+    return ax
+
+
+def get_scoop_points(df, p1, p2, delta):
+    a, b = get_line_from_two_points(p1, p2)
+    return get_scoop_line(
+        df,
+        a,
+        b,
+        delta,
+        xlim=(min(p1[0], p2[0]), max(p1[0], p2[0])),
+        ylim=(min(p1[1], p2[1]), max(p1[1], p2[1])),
+    )
+
+
+def get_scoop_line(df, a, b, delta, xlim=(-np.inf, np.inf), ylim=(-np.inf, np.inf)):
+    col_names = list(df.columns)
+    X = col_names[0]
+    Y = col_names[1]
+    Z = col_names[2]
+
+    df["distsign"] = (df[X] * a + b - df[Y]) / (a**2 + 1) ** 0.5
+    df["dist"] = df["distsign"].abs()
+    df["line"] = df[X] * a + b
+    print(f"xlim {xlim}")
+    print(f"ylim {ylim}")
+    return df[
+        (df["dist"] < delta)
+        * df[X].between(*xlim, "both")
+        * df[Y].between(*ylim, "both")
+    ].sort_values([X, Y])[[X, Y, Z, "distsign"]]
+
+
+def get_line_from_two_points(point_1: tuple, point_2: tuple):
+    a = (point_2[1] - point_1[1]) / (point_2[0] - point_1[0])
+    b = point_1[1] - a * point_1[0]
+    return a, b
+
+
+def line_on_plot(my_data, delta=0.01) -> tuple:
+    _, (ax, ax2) = plt.subplots(
+        1, 2, sharex=False, sharey=False, constrained_layout=True
+    )
+    axes, cbaxes = plot_dataset(my_data, axes=ax)
+    df = my_data.to_pandas_dataframe().reset_index()
+
+    line = LineBuilder(
+        axes[0],
+        ax,
+        "red",
+        action=partial(reset_counter_ax_plot_line_scoop, df, ax2, delta),
+        use_single_click=True,
+    )
+    plt.show()
+    return (line.xs, line.ys, line.ramp)
+
+
+def reset_counter_ax_plot_line_scoop(df, ax, delta, self):
+    if self.counter > 1:
+        self.counter = 0
+        ax.cla()
+        plot_line_scoop_from_df_points(
+            df, (self.xs[0], self.ys[0]), (self.xs[1], self.ys[1]), delta, ax
+        )
+
+
+class LineScoop:
+    def __init__(self, data, delta=0.01):
+        self.delta = delta
+        _, (self.ax_2d, self.ax_line) = plt.subplots(
+            1, 2, sharex=False, sharey=False, constrained_layout=True
+        )
+        axes, self.cbaxes = plot_dataset(data, axes=self.ax_2d)
+        self.df = data.to_pandas_dataframe().reset_index()
+        self.line = LineBuilder(
+            axes[0],
+            self.ax_2d,
+            "red",
+            action=self.reset_counter_ax_plot_line_scoop,
+            use_single_click=True,
+        )
+        self.df_plot = None
+
+    def reset_counter_ax_plot_line_scoop(self):
+        if self.line.counter > 1:
+            self.line.counter = 0
+            self.ax_line.cla()
+            self.plot_line_scoop_from_df_points()
+
+    def plot_line_scoop_from_df_points(self, labels=None):
+        a, b = get_line_from_two_points(self.p1, self.p2)
+        ax = self.plot_line_scoop_from_df_line(
+            a,
+            b,
+        )
+        return ax
+
+    @property
+    def p1(self):
+        return (self.line.xs[0], self.line.ys[0])
+
+    @property
+    def p2(self):
+        return (self.line.xs[1], self.line.ys[1])
+
+    @property
+    def xlim(self):
+        return (min(self.p1[0], self.p2[0]), max(self.p1[0], self.p2[0]))
+
+    @property
+    def ylim(self):
+        return (min(self.p1[1], self.p2[1]), max(self.p1[1], self.p2[1]))
+
+    def plot_line_scoop_from_df_line(
+        self,
+        a,
+        b,
+        labels=None,
+    ):
+        self.ax_line = if_not_ax_make_ax(self.ax_line)
+        self.df_plot = get_scoop_line(
+            self.df, a, b, self.delta, xlim=self.xlim, ylim=self.ylim
+        )
+        dist_to_point = np.array(
+            [
+                [abs(x * int(x > 0)), abs(x * int(x <= 0))]
+                for x in self.df_plot["distsign"].values
+            ]
+        ).T
+        col_names = list(self.df_plot.columns)
+        self.df_plot.plot(
+            col_names[0],
+            col_names[2],
+            linestyle="--",
+            marker="o",
+            ax=self.ax_line,
+            yerr=dist_to_point,
+        )
+        self.ax_line.legend(
+            f"t({col_names[0]} + {a:.2f}{col_names[1]}) + {b:.2f}{col_names[1]}"
+        )
+        self.ax_line.set_title(
+            f"t({col_names[0]} + {a:.2f}{col_names[1]}) + {b:.2f}{col_names[1]}"
+        )
+        if labels:
+            self.ax_line.set_xlabel(
+                f"t({labels[0]} + {a:.2f}{labels[1]}) + {b:.2f}{labels[1]}"
+            )
+        else:
+            self.ax_line.set_xlabel("t")
+        return self.ax_line
