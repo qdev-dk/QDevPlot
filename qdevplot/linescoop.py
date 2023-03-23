@@ -1,7 +1,9 @@
-
 import matplotlib.pyplot as plt
+import numpy as np
 from qcodes.dataset.plotting import plot_dataset
 from qdevplot.linebuilder import LineBuilder
+from qdevplot.plotfunctions import if_not_ax_make_ax
+
 
 class LineScoop:
     def __init__(self, data, delta=0.01):
@@ -88,3 +90,27 @@ class LineScoop:
         else:
             self.ax_line.set_xlabel("t")
         return self.ax_line
+
+
+def get_line_from_two_points(point_1: tuple, point_2: tuple):
+    a = (point_2[1] - point_1[1]) / (point_2[0] - point_1[0])
+    b = point_1[1] - a * point_1[0]
+    return a, b
+
+
+def get_scoop_line(df, a, b, delta, xlim=(-np.inf, np.inf), ylim=(-np.inf, np.inf)):
+    col_names = list(df.columns)
+    X = col_names[0]
+    Y = col_names[1]
+    Z = col_names[2]
+
+    df["distsign"] = (df[X] * a + b - df[Y]) / (a**2 + 1) ** 0.5
+    df["dist"] = df["distsign"].abs()
+    df["line"] = df[X] * a + b
+    print(f"xlim {xlim}")
+    print(f"ylim {ylim}")
+    return df[
+        (df["dist"] < delta)
+        * df[X].between(*xlim, "both")
+        * df[Y].between(*ylim, "both")
+    ].sort_values([X, Y])[[X, Y, Z, "distsign"]]
