@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from qcodes.dataset.plotting import plot_dataset
+from qcodes.dataset.data_set import load_by_id
 from qdevplot.linebuilder import LineBuilder
 from qdevplot.plotfunctions import if_not_ax_make_ax
 
 
 class LineScoop:
-    def __init__(self, data, delta=0.01):
+    def __init__(self, data, delta: float = 0.01):
         self.delta = delta
         _, (self.ax_2d, self.ax_line) = plt.subplots(
             1, 2, sharex=False, sharey=False, constrained_layout=True
@@ -35,6 +36,11 @@ class LineScoop:
             b,
         )
         return ax
+
+    @classmethod
+    def from_run_id(cls, run_id: int, delta: float = 0.01) -> "LineScoop":
+        data = load_by_id(run_id)
+        return cls(data, delta)
 
     @property
     def p1(self):
