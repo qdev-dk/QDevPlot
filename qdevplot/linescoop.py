@@ -68,13 +68,15 @@ class LineScoop:
         self.df_plot = get_scoop_line(
             self.df, a, b, self.delta, xlim=self.xlim, ylim=self.ylim
         )
+        col_names = list(self.df_plot.columns)
+        scale = self.df_plot[col_names[2]].max() - self.df_plot[col_names[2]].min()
         dist_to_point = np.array(
             [
-                [abs(x * int(x > 0)), abs(x * int(x <= 0))]
+                [abs(x * int(x > 0)) * scale, abs(x * int(x <= 0) * scale)]
                 for x in self.df_plot["distsign"].values
             ]
         ).T
-        col_names = list(self.df_plot.columns)
+
         self.df_plot.plot(
             col_names[0],
             col_names[2],
@@ -83,6 +85,7 @@ class LineScoop:
             ax=self.ax_line,
             yerr=dist_to_point,
         )
+
         self.ax_line.legend(
             f"t({col_names[0]} + {a:.2f}{col_names[1]}) + {b:.2f}{col_names[1]}"
         )
