@@ -3,14 +3,13 @@ from functools import partial
 
 
 class LineBuilder:
-    def __init__(self, line, ax, color, action=None, use_single_click=False):
-        self.line = line
+    def __init__(self, ax, color, action=None, use_single_click=False):
         self.ax = ax
         self.color = color
         self.xs = []
         self.ys = []
         self.ramp = []
-        self.cid = line.figure.canvas.mpl_connect("button_press_event", self)
+        self.cid = ax.figure.canvas.mpl_connect("button_press_event", self)
         self.counter = 0
         self.precision = 0.0005
         # self.action = partial(action, self)
@@ -20,7 +19,7 @@ class LineBuilder:
         self.use_single_click = use_single_click
 
     def __call__(self, event):
-        if event.inaxes != self.line.axes:
+        if event.inaxes != self.ax.axes:
             return
         if self.double_or_single_click(event):
             if self.counter == 0:
@@ -82,18 +81,19 @@ class LineBuilder:
         )
         if plateau != []:
             self.markers = self.ax.scatter(
-                plateau[0], plateau[1], s=120, color=self.color, marker="o"
+                plateau[0], plateau[1], s=120, color=self.color, marker="1"
             )
         if ramp != []:
             self.markers = self.ax.scatter(
                 ramp[0], ramp[1], s=120, color="black", marker="x"
             )
         self.plot_line_segment()
-        self.line.figure.canvas.draw()
+        self.ax.figure.canvas.draw()
 
     def plot_line_segment(self):
         if self.line_segment:
-            self.ax.lines.remove(self.line_segment.pop(0))
+            self.line_segment.pop(0).remove()
+            #self.ax.lines.remove(self.line_segment.pop(0))
         for i in range(len(self.xs)):
             if i > 0:
                 if self.ramp[i] == 1:
