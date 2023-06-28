@@ -1,3 +1,4 @@
+from turtle import width
 import matplotlib.pyplot as plt
 import numpy as np
 from qcodes.dataset.plotting import plot_dataset
@@ -7,8 +8,17 @@ from qdevplot.plotfunctions import if_not_ax_make_ax
 
 
 class LineScoop:
-    def __init__(self, data, delta: float = 0.01, normalize_axes=True):
+    def __init__(
+        self,
+        data,
+        delta: float = 0.01,
+        normalize_axes=True,
+        do_plot_projection=True,
+        do_mark_contributing_points=True,
+    ):
         self.delta = delta
+        self.do_plot_projection = do_plot_projection
+        self.do_mark_contributing_points = do_mark_contributing_points
         _, (self.ax_2d, self.ax_line) = plt.subplots(
             1, 2, sharex=False, sharey=False, constrained_layout=True
         )
@@ -70,6 +80,10 @@ class LineScoop:
             a,
             b,
         )
+        if self.do_plot_projection:
+            self.plot_projection()
+        if self.do_mark_contributing_points:
+            self.mark_contributing_points()
         return self.ax_line
 
     @classmethod
@@ -177,11 +191,22 @@ class LineScoop:
         self.df_plot["diff_x"] = self.df_plot["crossing_x"] - self.df_plot[self.X]
 
         self.projection_plot = self.ax_2d.quiver(
-            self.df_plot[self.X].tolist(),
-            self.df_plot[self.Y].tolist(),
-            self.df_plot["diff_x"].tolist(),
-            self.df_plot["diff_y"].tolist(),
+            self.df_plot[self.X_original].tolist(),
+            self.df_plot[self.Y_original].tolist(),
+            [
+                self.from_normalized_to_original_X(x)
+                for x in self.df_plot["diff_x"].tolist()
+            ],
+            [
+                self.from_normalized_to_original_Y(y)
+                for y in self.df_plot["diff_y"].tolist()
+            ],
             scale=1,
+            angles="xy",
+            scale_units="xy",
+            width=0.001,
+            headwidth=1,
+            headlength=1,
         )
         self.ax_2d.figure.canvas.draw()
 
