@@ -15,6 +15,7 @@ class LineScoop:
         normalize_axes=True,
         do_plot_projection=True,
         do_mark_contributing_points=True,
+        aspect=1,
     ):
         self.delta = delta
         self.do_plot_projection = do_plot_projection
@@ -22,6 +23,7 @@ class LineScoop:
         _, (self.ax_2d, self.ax_line) = plt.subplots(
             1, 2, sharex=False, sharey=False, constrained_layout=True
         )
+
         axes, self.cbaxes = plot_dataset(data, axes=self.ax_2d)
         self.df = data.to_pandas_dataframe().reset_index()
         self.normalize_axes = normalize_axes
@@ -36,18 +38,26 @@ class LineScoop:
         self.max_X_original = self.df[self.X].max()
         self.min_Y_original = self.df[self.Y].min()
         self.max_Y_original = self.df[self.Y].max()
-
-        self.df[f"{self.X}_normalized"] = (self.df[self.X] - self.df[self.X].min()) / (
-            self.df[self.X].max() - self.df[self.X].min()
+        self.aspect = aspect**0.5
+        self.df[f"{self.X}_normalized"] = (
+            (1 / self.aspect)
+            * (self.df[self.X] - self.df[self.X].min())
+            / (self.df[self.X].max() - self.df[self.X].min())
         )
-        self.df[f"{self.Y}_normalized"] = (self.df[self.Y] - self.df[self.Y].min()) / (
-            self.df[self.Y].max() - self.df[self.Y].min()
+        self.df[f"{self.Y}_normalized"] = (
+            self.aspect
+            * (self.df[self.Y] - self.df[self.Y].min())
+            / (self.df[self.Y].max() - self.df[self.Y].min())
         )
 
         if self.normalize_axes:
             self.X = f"{self.X}_normalized"
             self.Y = f"{self.Y}_normalized"
 
+        self.normalized_aspect = (self.max_X_original - self.min_X_original) / (
+            self.max_Y_original - self.min_Y_original
+        )
+        self.ax_2d.set_aspect(self.aspect**2 * self.normalized_aspect)
         # self.ax_2d, self.cbaxes = self.df_to_scatter(ax=self.ax_2d)
         self.contributing_points_plot = None
         self.projection_plot = None
@@ -226,16 +236,22 @@ class LineScoop:
         ), self.from_normalized_to_original_Y(p[1])
 
     def from_original_to_normalized_X(self, x):
-        return normalize(x, self.min_X_original, self.max_X_original)
+        return (1 / self.aspect) * normalize(
+            x, self.min_X_original, self.max_X_original
+        )
 
     def from_original_to_normalized_Y(self, y):
-        return normalize(y, self.min_Y_original, self.max_Y_original)
+        return self.aspect * normalize(y, self.min_Y_original, self.max_Y_original)
 
     def from_normalized_to_original_X(self, x):
-        return inverse_normalize(x, self.min_X_original, self.max_X_original)
+        return self.aspect * inverse_normalize(
+            x, self.min_X_original, self.max_X_original
+        )
 
     def from_normalized_to_original_Y(self, y):
-        return inverse_normalize(y, self.min_Y_original, self.max_Y_original)
+        return (1 / self.aspect) * inverse_normalize(
+            y, self.min_Y_original, self.max_Y_original
+        )
 
     def get_scoop_line(
         self, a, b, delta, xlim=(-np.inf, np.inf), ylim=(-np.inf, np.inf), scale=None
