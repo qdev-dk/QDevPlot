@@ -25,7 +25,7 @@ class LineScoop:
             1, 2, sharex=False, sharey=False, constrained_layout=True
         )
 
-        self.ax_2d, self.cbaxes = plot_dataset(data, axes=self.ax_2d)
+        _, self.cbaxes = plot_dataset(data, axes=self.ax_2d)
         self.df = data.to_pandas_dataframe().reset_index()
 
         self.normalize_axes = normalize_axes
@@ -36,30 +36,22 @@ class LineScoop:
         self.X_original = col_names[0]
         self.Y_original = col_names[1]
 
-        self.min_X_original = self.df[self.X].min()
-        self.max_X_original = self.df[self.X].max()
-        self.min_Y_original = self.df[self.Y].min()
-        self.max_Y_original = self.df[self.Y].max()
+        self.x_nat = NormalAspectTransform(self.df[self.X], self.aspect)
+        self.y_nat = NormalAspectTransform(self.df[self.Y], 1 / self.aspect)
 
-        self.df[f"{self.X}_normalized"] = (
-            (1 / self.aspect)
-            * (self.df[self.X] - self.df[self.X].min())
-            / (self.df[self.X].max() - self.df[self.X].min())
+        self.df[f"{self.X}_normalized"] = self.df[self.X_original].apply(
+            self.x_nat.from_original_to_normalized
         )
 
-        self.df[f"{self.Y}_normalized"] = (
-            self.aspect
-            * (self.df[self.Y] - self.df[self.Y].min())
-            / (self.df[self.Y].max() - self.df[self.Y].min())
+        self.df[f"{self.Y}_normalized"] = self.df[self.Y_original].apply(
+            self.y_nat.from_original_to_normalized
         )
 
         if self.normalize_axes:
             self.X = f"{self.X}_normalized"
             self.Y = f"{self.Y}_normalized"
 
-        self.normalized_aspect = (self.max_X_original - self.min_X_original) / (
-            self.max_Y_original - self.min_Y_original
-        )
+        self.normalized_aspect = self.x_nat.span / self.y_nat.span
         self.ax_2d.set_aspect(self.aspect**2 * self.normalized_aspect)
 
         self.contributing_points_plot = None
@@ -239,11 +231,11 @@ class LineScoop:
             self.df_plot[self.X_original].tolist(),
             self.df_plot[self.Y_original].tolist(),
             [
-                self.from_normalized_to_original_X(x)
+                self.x_nat.from_normalized_to_original(x)
                 for x in self.df_plot["diff_x"].tolist()
             ],
             [
-                self.from_normalized_to_original_Y(y)
+                self.y_nat.from_normalized_to_original(y)
                 for y in self.df_plot["diff_y"].tolist()
             ],
             scale=1,
@@ -261,50 +253,40 @@ class LineScoop:
         return p
 
     def from_original_to_normalized_point(self, p):
-        return self.from_original_to_normalized_X(
+        return self.x_nat.from_original_to_normalized(
             p[0]
-        ), self.from_original_to_normalized_Y(p[1])
+        ), self.y_nat.from_original_to_normalized(p[1])
 
     def from_normalized_to_original_point(self, p):
-        return self.from_normalized_to_original_X(
+        return self.x_nat.from_normalized_to_original(
             p[0]
-        ), self.from_normalized_to_original_Y(p[1])
-
-    def from_original_to_normalized_X(self, x):
-        return (1 / self.aspect) * normalize(
-            x, self.min_X_original, self.max_X_original
-        )
-
-    def from_original_to_normalized_Y(self, y):
-        return self.aspect * normalize(y, self.min_Y_original, self.max_Y_original)
-
-    def from_normalized_to_original_X(self, x):
-        return self.aspect * inverse_normalize(
-            x, self.min_X_original, self.max_X_original
-        )
-
-    def from_normalized_to_original_Y(self, y):
-        return (1 / self.aspect) * inverse_normalize(
-            y, self.min_Y_original, self.max_Y_original
-        )
+        ), self.y_nat.from_normalized_to_original(p[1])
 
 
-def normalize(x, x_min, x_max):
-    return (x - x_min) / (x_max - x_min)
+class NormalAspectTransform:
+    def __init__(self, col, aspect):
+        self.aspect = aspect
+        self.min = col.min()
+        self.max = col.max()
+        self.span = self.max - self.min
 
+    def from_original_to_normalized(self, x):
+        return (1 / self.aspect) * self.normalize(x)
 
-def inverse_normalize(x, x_min, x_max):
-    return x * (x_max - x_min) + x_min
+    def from_normalized_to_original(self, x):
+        return self.aspect * self.inverse_normalize(x)
+
+    def normalize(self, x):
+        return (x - self.min) / self.span
+
+    def inverse_normalize(self, x):
+        return x * self.span + self.min
 
 
 def get_line_from_two_points(point_1: tuple, point_2: tuple):
     a = (point_2[1] - point_1[1]) / (point_2[0] - point_1[0])
     b = point_1[1] - a * point_1[0]
     return a, b
-
-
-def range_of_column(col):
-    return col.max() - col.min()
 
 
 def get_dist_between_line_and_point(a: float, b: float, px: float, py: float):
