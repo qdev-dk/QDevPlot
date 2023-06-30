@@ -20,12 +20,14 @@ class LineScoop:
         self.delta = delta
         self.do_plot_projection = do_plot_projection
         self.do_mark_contributing_points = do_mark_contributing_points
+        self.aspect = aspect**0.5
         _, (self.ax_2d, self.ax_line) = plt.subplots(
             1, 2, sharex=False, sharey=False, constrained_layout=True
         )
 
-        axes, self.cbaxes = plot_dataset(data, axes=self.ax_2d)
+        self.ax_2d, self.cbaxes = plot_dataset(data, axes=self.ax_2d)
         self.df = data.to_pandas_dataframe().reset_index()
+
         self.normalize_axes = normalize_axes
         col_names = list(self.df.columns)
         self.X = col_names[0]
@@ -38,12 +40,13 @@ class LineScoop:
         self.max_X_original = self.df[self.X].max()
         self.min_Y_original = self.df[self.Y].min()
         self.max_Y_original = self.df[self.Y].max()
-        self.aspect = aspect**0.5
+
         self.df[f"{self.X}_normalized"] = (
             (1 / self.aspect)
             * (self.df[self.X] - self.df[self.X].min())
             / (self.df[self.X].max() - self.df[self.X].min())
         )
+
         self.df[f"{self.Y}_normalized"] = (
             self.aspect
             * (self.df[self.Y] - self.df[self.Y].min())
@@ -58,29 +61,32 @@ class LineScoop:
             self.max_Y_original - self.min_Y_original
         )
         self.ax_2d.set_aspect(self.aspect**2 * self.normalized_aspect)
-        # self.ax_2d, self.cbaxes = self.df_to_scatter(ax=self.ax_2d)
+
         self.contributing_points_plot = None
         self.projection_plot = None
+        self.df_plot = None
+
         self.line = LineBuilder(
             self.ax_2d,
             "red",
             action=self.reset_counter_ax_plot_line_scoop,
             use_single_click=True,
         )
-        self.df_plot = None
+
+    @classmethod
+    def from_run_id(cls, run_id: int, delta: float = 0.01) -> "LineScoop":
+        data = load_by_id(run_id)
+        return cls(data, delta)
 
     def reset_counter_ax_plot_line_scoop(self):
-        if self.line.counter > 1:
-            self.line.counter = 0
-            self.ax_line.cla()
-            if self.contributing_points_plot:
-                self.contributing_points_plot.remove()
-                self.contributing_points_plot = None
-            if self.projection_plot:
-                self.projection_plot.remove()
-                self.projection_plot = None
+        if self.line.counter <= 1:
+            return
 
-            self.plot_line_scoop_from_df_points()
+        self.line.counter = 0
+        self.ax_line.cla()
+        self.contributing_points_plot = remove_plot(self.contributing_points_plot)
+        self.projection_plot = remove_plot(self.projection_plot)
+        self.plot_line_scoop_from_df_points()
 
     def plot_line_scoop_from_df_points(self, labels=None):
         print(f"p1 {self.p1}")
@@ -95,57 +101,6 @@ class LineScoop:
         if self.do_mark_contributing_points:
             self.mark_contributing_points()
         return self.ax_line
-
-    @classmethod
-    def from_run_id(cls, run_id: int, delta: float = 0.01) -> "LineScoop":
-        data = load_by_id(run_id)
-        return cls(data, delta)
-
-    @property
-    def p1(self):
-        return self.normalize_or_not((self.line.xs[0], self.line.ys[0]))
-
-    @property
-    def p2(self):
-        return self.normalize_or_not((self.line.xs[1], self.line.ys[1]))
-
-    @property
-    def xlim(self):
-        return (min(self.p1[0], self.p2[0]), max(self.p1[0], self.p2[0]))
-
-    @property
-    def ylim(self):
-        return (min(self.p1[1], self.p2[1]), max(self.p1[1], self.p2[1]))
-
-    def range_col(self, col):
-        return col.max() - col.min()
-
-    def df_to_scatter(
-        self, x_label=None, y_label=None, cb_label=None, ax=None, **kwargs
-    ):
-        x = self.df[self.X].values
-        y = self.df[self.Y].values
-        z = self.df[self.Z].values
-
-        ax = if_not_ax_make_ax(ax)
-        # ax = style_jose(ax)
-
-        if x_label is None:
-            x_label = self.X
-        if y_label is None:
-            y_label = self.Y
-        if cb_label is None:
-            cb_label = self.Z
-
-        mappable = ax.scatter(
-            x=x, y=y, c=z, cmap="viridis", **kwargs  # vmin=0.00, vmax=4.0,
-        )
-        cb = ax.figure.colorbar(mappable, ax=ax)
-        cb.set_label(cb_label)
-        ax.set_ylabel(y_label)
-        ax.set_xlabel(x_label)
-
-        return ax, cb
 
     def plot_line_scoop_from_df_line(
         self,
@@ -187,6 +142,86 @@ class LineScoop:
         else:
             self.ax_line.set_xlabel("t")
         return self.ax_line
+
+    def get_scoop_line(
+        self, a, b, delta, xlim=(-np.inf, np.inf), ylim=(-np.inf, np.inf), scale=None
+    ):
+        self.df = self.ad_dist_and_crossing(a, b)
+        return self.df[
+            (self.df["dist"] < delta)
+            * self.df["crossing_x"].between(*xlim, "both")
+            * self.df["crossing_y"].between(*ylim, "both")
+        ].sort_values(["crossing_x", "crossing_y"])[
+            [
+                self.X_original,
+                self.Y_original,
+                self.X,
+                self.Y,
+                self.Z,
+                "crossing_x",
+                "crossing_y",
+                "dist",
+            ]
+        ]
+
+    def ad_dist_and_crossing(self, a, b):
+        temp = np.array(
+            [
+                *self.df.apply(
+                    lambda x: get_dist_between_line_and_point(
+                        a, b, x[self.X], x[self.Y]
+                    ),
+                    axis=1,
+                )
+            ]
+        )
+        self.df["crossing_x"] = temp[:, 0]
+        self.df["crossing_y"] = temp[:, 1]
+        self.df["dist"] = temp[:, 2]
+        return self.df
+
+    @property
+    def p1(self):
+        return self.normalize_or_not((self.line.xs[0], self.line.ys[0]))
+
+    @property
+    def p2(self):
+        return self.normalize_or_not((self.line.xs[1], self.line.ys[1]))
+
+    @property
+    def xlim(self):
+        return (min(self.p1[0], self.p2[0]), max(self.p1[0], self.p2[0]))
+
+    @property
+    def ylim(self):
+        return (min(self.p1[1], self.p2[1]), max(self.p1[1], self.p2[1]))
+
+    def df_to_scatter(
+        self, x_label=None, y_label=None, cb_label=None, ax=None, **kwargs
+    ):
+        x = self.df[self.X].values
+        y = self.df[self.Y].values
+        z = self.df[self.Z].values
+
+        ax = if_not_ax_make_ax(ax)
+        # ax = style_jose(ax)
+
+        if x_label is None:
+            x_label = self.X
+        if y_label is None:
+            y_label = self.Y
+        if cb_label is None:
+            cb_label = self.Z
+
+        mappable = ax.scatter(
+            x=x, y=y, c=z, cmap="viridis", **kwargs  # vmin=0.00, vmax=4.0,
+        )
+        cb = ax.figure.colorbar(mappable, ax=ax)
+        cb.set_label(cb_label)
+        ax.set_ylabel(y_label)
+        ax.set_xlabel(x_label)
+
+        return ax, cb
 
     def mark_contributing_points(self):
         x_cord = self.df_plot[self.X_original].tolist()
@@ -253,43 +288,6 @@ class LineScoop:
             y, self.min_Y_original, self.max_Y_original
         )
 
-    def get_scoop_line(
-        self, a, b, delta, xlim=(-np.inf, np.inf), ylim=(-np.inf, np.inf), scale=None
-    ):
-        self.df = self.ad_dist_and_crossing(a, b)
-        return self.df[
-            (self.df["dist"] < delta)
-            * self.df["crossing_x"].between(*xlim, "both")
-            * self.df["crossing_y"].between(*ylim, "both")
-        ].sort_values(["crossing_x", "crossing_y"])[
-            [
-                self.X_original,
-                self.Y_original,
-                self.X,
-                self.Y,
-                self.Z,
-                "crossing_x",
-                "crossing_y",
-                "dist",
-            ]
-        ]
-
-    def ad_dist_and_crossing(self, a, b):
-        temp = np.array(
-            [
-                *self.df.apply(
-                    lambda x: get_dist_between_line_and_point(
-                        a, b, x[self.X], x[self.Y]
-                    ),
-                    axis=1,
-                )
-            ]
-        )
-        self.df["crossing_x"] = temp[:, 0]
-        self.df["crossing_y"] = temp[:, 1]
-        self.df["dist"] = temp[:, 2]
-        return self.df
-
 
 def normalize(x, x_min, x_max):
     return (x - x_min) / (x_max - x_min)
@@ -323,3 +321,9 @@ def get_line_crossing(a: float, b: float, px: float, py: float):
     crossing_y = a * crossing_x + b
 
     return crossing_x, crossing_y
+
+
+def remove_plot(the_plot) -> None:
+    if the_plot is not None:
+        the_plot.remove()
+    return None
