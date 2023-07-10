@@ -22,12 +22,13 @@ class LineMover:
     showverts = True
     epsilon = 5  # max pixel distance to count as a vertex hit
 
-    def __init__(self, ax, action=None, **kwargs):
+    def __init__(self, ax, linescoop, action=None, **kwargs):
         self.ax = ax
-        self.action = action
+        self.action_bla = action
         canvas = ax.figure.canvas
         self.counter = 0
-
+        self.projektion_plot = None
+        self.contributing_points_plot = None
         self.xs, self.ys = [], []
         self.line = Line2D(
             self.xs,
@@ -39,7 +40,7 @@ class LineMover:
             animated=True,
         )
         self.ax.add_line(self.line)
-
+        self.linescoop = linescoop
         self.cid = self.line.add_callback(self.line_changed)
         self._ind = None  # the active vert
 
@@ -49,6 +50,13 @@ class LineMover:
         canvas.mpl_connect("button_release_event", self.on_button_release)
         canvas.mpl_connect("motion_notify_event", self.on_mouse_move)
         self.canvas = canvas
+
+    def action(self):
+        self.action_bla()
+        self.plot_projection()
+        self.plot_contributing_points()
+        self.plot_projection()
+        self.ax.figure.canvas.draw()
 
     def on_draw(self, event):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
@@ -178,3 +186,36 @@ class LineMover:
             self.action()
             self.canvas.blit(self.ax.bbox)
             # self.canvas.draw()
+
+    def plot_projection(self):
+        remove_plot(self.projektion_plot)
+        x_one, y_one, x_two, y_two = self.linescoop.projection()
+        self.projektion_plot = self.ax.quiver(
+            x_one,
+            y_one,
+            x_two,
+            y_two,
+            scale=1,
+            angles="xy",
+            scale_units="xy",
+            width=0.001,
+            headwidth=1,
+            headlength=1,
+        )
+
+        #self.ax.figure.canvas.draw()
+
+    def plot_contributing_points(self):
+        remove_plot(self.contributing_points_plot)
+        x_cord, y_cord = self.linescoop.contributing_points()
+        self.contributing_points_plot = self.ax.scatter(
+            x_cord, y_cord, marker=".", color="red"
+        )
+        # self.ax_2d.figure.canvas.draw()
+        # self.ax.figure.canvas.blit(self.ax.bbox)
+
+
+def remove_plot(the_plot) -> None:
+    if the_plot is not None:
+        the_plot.remove()
+    return None

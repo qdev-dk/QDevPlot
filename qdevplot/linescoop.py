@@ -22,8 +22,8 @@ class LineScoop:
         aspect=1,
     ):
         self.delta = delta
-        self.do_plot_projection = do_plot_projection
-        self.do_mark_contributing_points = do_mark_contributing_points
+        # self.do_plot_projection = do_plot_projection
+        #self.do_mark_contributing_points = do_mark_contributing_points
         self.aspect = aspect**0.5
         _, (self.ax_2d, self.ax_line) = plt.subplots(
             1, 2, sharex=False, sharey=False, constrained_layout=True
@@ -57,8 +57,8 @@ class LineScoop:
         self.normalized_aspect = self.x_nat.span / self.y_nat.span
         self.ax_2d.set_aspect(self.aspect**2 * self.normalized_aspect)
 
-        self.contributing_points_plot = None
-        self.projection_plot = None
+        # self.contributing_points_plot = None
+        # self.projection_plot = None
         self.df_plot = None
 
         if two_d_plotter is None:
@@ -67,6 +67,7 @@ class LineScoop:
 
         self.line = LineMover(  # LineBuilder(
             self.ax_2d,
+            linescoop=self,
             # "red",
             action=self.reset_counter_ax_plot_line_scoop,
             use_single_click=True,
@@ -90,8 +91,8 @@ class LineScoop:
         # self.line.counter = 0
         self.ax_line.cla()
         print("action")
-        self.contributing_points_plot = remove_plot(self.contributing_points_plot)
-        self.projection_plot = remove_plot(self.projection_plot)
+        #self.contributing_points_plot = remove_plot(self.contributing_points_plot)
+        # self.projection_plot = remove_plot(self.projection_plot)
         self.plot_line_scoop_from_df_points()
         print("action2")
 
@@ -103,10 +104,10 @@ class LineScoop:
             a,
             b,
         )
-        if self.do_plot_projection:
-            self.plot_projection()
-        if self.do_mark_contributing_points:
-            self.mark_contributing_points()
+        # if self.do_plot_projection:
+        #    self.plot_projection()
+        # if self.do_mark_contributing_points:
+        #   self.mark_contributing_points()
         return self.ax_line
 
     def plot_line_scoop_from_df_line(
@@ -125,14 +126,17 @@ class LineScoop:
         )
         col_names = list(self.df_plot.columns)
         self.ax_line.plot(
-            self.df_plot["crossing_x"].tolist(),
+            [
+                self.x_nat.from_normalized_to_original(x)
+                for x in self.df_plot["crossing_x"].tolist()
+            ],
             self.df_plot[self.Z].tolist(),
             linestyle="--",
             marker="o",
             label="data",
         )
 
-        #self.ax_line.figure.canvas.draw()
+        # self.ax_line.figure.canvas.draw()
         self.ax_line.figure.canvas.blit(self.ax_line.bbox)
 
         self.ax_line.legend(
@@ -228,20 +232,15 @@ class LineScoop:
 
         return axes, cb
 
-    def mark_contributing_points(self):
-        x_cord = self.df_plot[self.X_original].tolist()
-        y_cord = self.df_plot[self.Y_original].tolist()
-        self.contributing_points_plot = self.ax_2d.scatter(
-            x_cord, y_cord, marker=".", color="red"
-        )
-        #self.ax_2d.figure.canvas.draw()
-        self.ax_2d.figure.canvas.blit(self.ax_2d.bbox)
+    def contributing_points(self):
+        return self.df_plot[self.X_original].tolist(), self.df_plot[self.Y_original].tolist()
 
-    def plot_projection(self):
+
+    def projection(self):
         self.df_plot["diff_y"] = self.df_plot["crossing_y"] - self.df_plot[self.Y]
         self.df_plot["diff_x"] = self.df_plot["crossing_x"] - self.df_plot[self.X]
 
-        self.projection_plot = self.ax_2d.quiver(
+        return (
             self.df_plot[self.X_original].tolist(),
             self.df_plot[self.Y_original].tolist(),
             [
@@ -252,15 +251,7 @@ class LineScoop:
                 self.y_nat.from_normalized_to_original(y) - self.y_nat.min
                 for y in self.df_plot["diff_y"].tolist()
             ],
-            scale=1,
-            angles="xy",
-            scale_units="xy",
-            width=0.001,
-            headwidth=1,
-            headlength=1,
         )
-        self.ax_2d.figure.canvas.draw()
-        #self.ax_2d.figure.canvas.blit(self.ax_2d.bbox)
 
     def normalize_or_not(self, p):
         if self.normalize_axes:
@@ -302,8 +293,8 @@ class LineScoop:
         return (
             df_pl.filter(
                 (pl.col("dist") < self.delta)
-                & (pl.col(self.X).is_between(*self.xlim))
-                & (pl.col(self.Y).is_between(*self.ylim))
+                & (pl.col("crossing_x").is_between(*self.xlim))
+                & (pl.col("crossing_y").is_between(*self.ylim))
             )
             .sort([pl.col("crossing_x"), pl.col("crossing_y")])
             .to_pandas()
