@@ -5,7 +5,9 @@ import numpy as np
 from qcodes.dataset.plotting import plot_dataset
 from qcodes.dataset.data_set import load_by_id
 from qdevplot.linebuilder import LineBuilder
+from qdevplot.linemover import LineMover
 from qdevplot.plotfunctions import if_not_ax_make_ax
+import polars as pl
 
 
 class LineScoop:
@@ -27,7 +29,7 @@ class LineScoop:
             1, 2, sharex=False, sharey=False, constrained_layout=True
         )
 
-        self.df = df  # data.to_pandas_dataframe().reset_index()
+        self.df = df
 
         self.normalize_axes = normalize_axes
         col_names = list(self.df.columns)
@@ -63,9 +65,9 @@ class LineScoop:
             two_d_plotter = self.df_to_scatter
         _, self.cbaxes = two_d_plotter(axes=self.ax_2d)
 
-        self.line = LineBuilder(
+        self.line = LineMover(  # LineBuilder(
             self.ax_2d,
-            "red",
+            # "red",
             action=self.reset_counter_ax_plot_line_scoop,
             use_single_click=True,
         )
@@ -82,14 +84,16 @@ class LineScoop:
         return cls.from_qcodes_data(data, **kwargs)
 
     def reset_counter_ax_plot_line_scoop(self):
-        if self.line.counter <= 1:
-            return
+        # if self.line.counter <= 1:
+        #   return
 
-        self.line.counter = 0
+        # self.line.counter = 0
         self.ax_line.cla()
+        print("action")
         self.contributing_points_plot = remove_plot(self.contributing_points_plot)
         self.projection_plot = remove_plot(self.projection_plot)
         self.plot_line_scoop_from_df_points()
+        print("action2")
 
     def plot_line_scoop_from_df_points(self, labels=None):
         print(f"p1 {self.p1}")
@@ -112,12 +116,12 @@ class LineScoop:
         labels=None,
     ):
         self.ax_line = if_not_ax_make_ax(self.ax_line)
-        self.df_plot = self.get_scoop_line(
+        self.df_plot = self.get_scoop_line_pl(
             a,
             b,
-            self.delta,
-            xlim=self.xlim,
-            ylim=self.ylim,
+            # self.delta,
+            # xlim=self.xlim,
+            # ylim=self.ylim,
         )
         col_names = list(self.df_plot.columns)
         self.ax_line.plot(
@@ -128,12 +132,12 @@ class LineScoop:
             label="data",
         )
 
-        self.ax_line.figure.canvas.draw()
+        #self.ax_line.figure.canvas.draw()
+        self.ax_line.figure.canvas.blit(self.ax_line.bbox)
 
         self.ax_line.legend(
             loc="best",
             fontsize=7,
-            # f"t({col_names[0]} + {a:.2f}{col_names[1]}) + {b:.2f}{col_names[1]}"
         )
         self.ax_line.set_title(
             f"t({col_names[0]} + {a:.2f}{col_names[1]}) + {b:.2f}{col_names[1]}"
@@ -216,9 +220,7 @@ class LineScoop:
         if cb_label is None:
             cb_label = self.Z
 
-        mappable = axes.scatter(
-            x=x, y=y, c=z, cmap="viridis", **kwargs  # vmin=0.00, vmax=4.0,
-        )
+        mappable = axes.scatter(x=x, y=y, c=z, cmap="viridis", **kwargs)
         cb = axes.figure.colorbar(mappable, ax=axes)
         cb.set_label(cb_label)
         axes.set_ylabel(y_label)
@@ -232,7 +234,8 @@ class LineScoop:
         self.contributing_points_plot = self.ax_2d.scatter(
             x_cord, y_cord, marker=".", color="red"
         )
-        self.ax_2d.figure.canvas.draw()
+        #self.ax_2d.figure.canvas.draw()
+        self.ax_2d.figure.canvas.blit(self.ax_2d.bbox)
 
     def plot_projection(self):
         self.df_plot["diff_y"] = self.df_plot["crossing_y"] - self.df_plot[self.Y]
@@ -242,11 +245,11 @@ class LineScoop:
             self.df_plot[self.X_original].tolist(),
             self.df_plot[self.Y_original].tolist(),
             [
-                self.x_nat.from_normalized_to_original(x)
+                self.x_nat.from_normalized_to_original(x) - self.x_nat.min
                 for x in self.df_plot["diff_x"].tolist()
             ],
             [
-                self.y_nat.from_normalized_to_original(y)
+                self.y_nat.from_normalized_to_original(y) - self.y_nat.min
                 for y in self.df_plot["diff_y"].tolist()
             ],
             scale=1,
@@ -257,6 +260,7 @@ class LineScoop:
             headlength=1,
         )
         self.ax_2d.figure.canvas.draw()
+        #self.ax_2d.figure.canvas.blit(self.ax_2d.bbox)
 
     def normalize_or_not(self, p):
         if self.normalize_axes:
@@ -272,6 +276,38 @@ class LineScoop:
         return self.x_nat.from_normalized_to_original(
             p[0]
         ), self.y_nat.from_normalized_to_original(p[1])
+
+    def get_scoop_line_pl(
+        self,
+        a,
+        b,
+    ):
+        df_pl = pl.from_pandas(self.df)
+        df_pl = df_pl.with_columns(
+            ((pl.col(self.X) + a * pl.col(self.Y) - a * b) / (1 + a**2)).alias(
+                "crossing_x"
+            )
+        )
+
+        df_pl = df_pl.with_columns(((a * pl.col("crossing_x") + b)).alias("crossing_y"))
+        df_pl = df_pl.with_columns(
+            (
+                (
+                    (pl.col("crossing_x") - pl.col(self.X)) ** 2
+                    + (pl.col("crossing_y") - pl.col(self.Y)) ** 2
+                )
+                ** 0.5
+            ).alias("dist")
+        )
+        return (
+            df_pl.filter(
+                (pl.col("dist") < self.delta)
+                & (pl.col(self.X).is_between(*self.xlim))
+                & (pl.col(self.Y).is_between(*self.ylim))
+            )
+            .sort([pl.col("crossing_x"), pl.col("crossing_y")])
+            .to_pandas()
+        )
 
 
 class NormalAspectTransform:
