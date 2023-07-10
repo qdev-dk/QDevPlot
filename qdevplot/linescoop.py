@@ -1,4 +1,5 @@
 from turtle import width
+from functools import partial
 import matplotlib.pyplot as plt
 import numpy as np
 from qcodes.dataset.plotting import plot_dataset
@@ -10,7 +11,8 @@ from qdevplot.plotfunctions import if_not_ax_make_ax
 class LineScoop:
     def __init__(
         self,
-        data,
+        df,
+        two_d_plotter=None,
         delta: float = 0.01,
         normalize_axes=True,
         do_plot_projection=True,
@@ -25,8 +27,7 @@ class LineScoop:
             1, 2, sharex=False, sharey=False, constrained_layout=True
         )
 
-        _, self.cbaxes = plot_dataset(data, axes=self.ax_2d)
-        self.df = data.to_pandas_dataframe().reset_index()
+        self.df = df  # data.to_pandas_dataframe().reset_index()
 
         self.normalize_axes = normalize_axes
         col_names = list(self.df.columns)
@@ -58,6 +59,10 @@ class LineScoop:
         self.projection_plot = None
         self.df_plot = None
 
+        if two_d_plotter is None:
+            two_d_plotter = self.df_to_scatter
+        _, self.cbaxes = two_d_plotter(axes=self.ax_2d)
+
         self.line = LineBuilder(
             self.ax_2d,
             "red",
@@ -66,9 +71,15 @@ class LineScoop:
         )
 
     @classmethod
-    def from_run_id(cls, run_id: int, delta: float = 0.01) -> "LineScoop":
+    def from_qcodes_data(cls, data, **kwargs) -> "LineScoop":
+        df = data.to_pandas_dataframe().reset_index()
+        two_d_plotter = partial(plot_dataset, data)
+        return cls(df=df, two_d_plotter=two_d_plotter, **kwargs)
+
+    @classmethod
+    def from_qcodes_run_id(cls, run_id, **kwargs) -> "LineScoop":
         data = load_by_id(run_id)
-        return cls(data, delta)
+        return cls.from_qcodes_data(data, **kwargs)
 
     def reset_counter_ax_plot_line_scoop(self):
         if self.line.counter <= 1:
@@ -189,31 +200,31 @@ class LineScoop:
         return (min(self.p1[1], self.p2[1]), max(self.p1[1], self.p2[1]))
 
     def df_to_scatter(
-        self, x_label=None, y_label=None, cb_label=None, ax=None, **kwargs
+        self, axes=None, x_label=None, y_label=None, cb_label=None, **kwargs
     ):
-        x = self.df[self.X].values
-        y = self.df[self.Y].values
+        x = self.df[self.X_original].values
+        y = self.df[self.Y_original].values
         z = self.df[self.Z].values
 
-        ax = if_not_ax_make_ax(ax)
+        axes = if_not_ax_make_ax(axes)
         # ax = style_jose(ax)
 
         if x_label is None:
-            x_label = self.X
+            x_label = self.X_original
         if y_label is None:
-            y_label = self.Y
+            y_label = self.Y_original
         if cb_label is None:
             cb_label = self.Z
 
-        mappable = ax.scatter(
+        mappable = axes.scatter(
             x=x, y=y, c=z, cmap="viridis", **kwargs  # vmin=0.00, vmax=4.0,
         )
-        cb = ax.figure.colorbar(mappable, ax=ax)
+        cb = axes.figure.colorbar(mappable, ax=axes)
         cb.set_label(cb_label)
-        ax.set_ylabel(y_label)
-        ax.set_xlabel(x_label)
+        axes.set_ylabel(y_label)
+        axes.set_xlabel(x_label)
 
-        return ax, cb
+        return axes, cb
 
     def mark_contributing_points(self):
         x_cord = self.df_plot[self.X_original].tolist()
