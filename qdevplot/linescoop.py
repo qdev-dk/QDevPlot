@@ -1,5 +1,6 @@
 import polars as pl
 import pandas as pd
+import numpy as np
 
 
 class LineScoop:
@@ -46,7 +47,7 @@ class LineScoop:
 
     def line_scoop_from_points(self):
         a, b = get_line_from_two_points(self.p1, self.p2)
-        self.df_plot = self.get_scoop_line_pl(
+        self.df_plot = self.get_scoop_line(
             a,
             b,
         )
@@ -61,7 +62,7 @@ class LineScoop:
             list(self.df_plot.columns),
         )
 
-    def get_scoop_line_pl(
+    def get_scoop_line(
         self,
         a,
         b,
@@ -156,6 +157,7 @@ class LineScoop:
 
 class NormalAspectTransform:
     def __init__(self, col, aspect):
+        col = np.array(col)
         self.aspect = aspect
         self.min = col.min()
         self.max = col.max()
@@ -165,7 +167,7 @@ class NormalAspectTransform:
         return (1 / self.aspect) * self.normalize(x)
 
     def from_normalized_to_original(self, x):
-        return self.aspect * self.inverse_normalize(x)
+        return  self.inverse_normalize(x*self.aspect)
 
     def normalize(self, x):
         return (x - self.min) / self.span
