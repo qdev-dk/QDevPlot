@@ -62,19 +62,14 @@ class TestNormalAspectTransform:
         np.testing.assert_array_almost_equal(result, expected_result)
 
 
-# Replace "your_module" with the actual module/file where the LineScoop class is defined.
-
-
 @pytest.fixture
 def sample_dataframe():
-    # Create a sample DataFrame for testing
     data = {"X": [1, 2, 3, 4, 5], "Y": [2, 4, 1, 6, 3], "Z": [10, 20, 30, 40, 50]}
     return pd.DataFrame(data)
 
 
 @pytest.fixture
 def sample_dataframedist():
-    # Create a sample DataFrame for testing
     data = {
         "X": [0, 2, 4, 6, 0, 2, 4, 6, 9, 10],
         "Y": [5, 6, 7, 8, 5, 4, 3, 1, 0, 10],
@@ -83,48 +78,72 @@ def sample_dataframedist():
     return pd.DataFrame(data)
 
 
+@pytest.fixture
+def sample_dataframe_projektion():
+    data = {
+        "X": [0, 4, 10],
+        "Y": [0, 6, 10],
+        "Z": [10, 15, 20],
+    }
+    return pd.DataFrame(data)
+
+
 def test_from_original_to_normalized_point(sample_dataframe):
-    # Test the from_original_to_normalized_point method
-
-    # Create an instance of LineScoop
     line_scoop = LineScoop(sample_dataframe, delta=0.1)
-
-    # Normalize the axes
     line_scoop.normalize_axes = True
-
-    # Set a sample point in the original coordinate system
     original_point = (3, 3.5)
 
-    # Get the corresponding normalized point
     normalized_point = line_scoop.from_original_to_normalized_point(original_point)
-
-    # Expected normalized point based on normalization transformation
     expected_normalized_point = (0.5, 0.5)
 
-    # Perform assertions to check if the results are as expected
     assert normalized_point == pytest.approx(expected_normalized_point)
 
 
 def test_from_normalized_to_original_point(sample_dataframe):
-    # Test the from_normalized_to_original_point method
-
-    # Create an instance of LineScoop
     line_scoop = LineScoop(sample_dataframe, delta=0.1)
-
-    # Normalize the axes
     line_scoop.normalize_axes = True
-
-    # Set a sample normalized point
     normalized_point = (0.5, 0.5)
-
-    # Get the corresponding point in the original coordinate system
     original_point = line_scoop.from_normalized_to_original_point(normalized_point)
-
-    # Expected original point based on the reverse normalization transformation
     expected_original_point = (3, 3.5)
 
-    # Perform assertions to check if the results are as expected
     assert original_point == pytest.approx(expected_original_point)
+
+
+def test_projektion(sample_dataframe_projektion):
+    line_scoop = LineScoop(sample_dataframe_projektion, delta=0.2)
+    line_scoop.p1 = (0.0, 0.0)
+    line_scoop.p2 = (10, 10.0)
+    line_scoop.line_scoop_from_points()
+    X_original, Y_original, diff_x_original, diff_y_original = line_scoop.projection()
+    print("bla")
+    print(X_original, Y_original, diff_x_original, diff_y_original)
+    assert X_original == pytest.approx([0, 4, 10])
+    assert Y_original == pytest.approx([0, 6, 10])
+    assert diff_x_original == pytest.approx([0, 1, 0])
+    assert diff_y_original == pytest.approx([0, -1, 0])
+
+
+def test_get_scoop_line(sample_dataframedist):
+    line_scoop = LineScoop(sample_dataframedist, delta=0.11)
+    line_scoop.p1 = (0.0, 5)
+    line_scoop.p2 = (10, 5.0)
+    df_plot = line_scoop.get_scoop_line(0.00, 0.5)
+    print(df_plot.head())
+    assert df_plot["crossing_x"].tolist() == [0, 0, 0.2, 0.2]
+    assert df_plot["crossing_y"].tolist() == [0.5, 0.5, 0.6, 0.4]
+
+
+def test_contributing_points(sample_dataframedist):
+    line_scoop = LineScoop(sample_dataframedist, delta=0.11)
+
+    line_scoop.p1 = (0.0, 5)
+    line_scoop.p2 = (10, 5.0)
+
+    line_scoop.line_scoop_from_points()
+    x_values, y_values = line_scoop.contributing_points()
+
+    assert x_values == [0, 0, 2, 2]
+    assert y_values == [5, 5, 6, 4]
 
 
 def test_line_scoop_from_points_dist(sample_dataframedist):
@@ -133,7 +152,6 @@ def test_line_scoop_from_points_dist(sample_dataframedist):
     line_scoop.p1 = (0.0, 5)
     line_scoop.p2 = (10, 5.0)
 
-    # Get the scoop line
     x_values, z_values, a, b, columns = line_scoop.line_scoop_from_points()
 
     assert len(x_values) == 2
@@ -182,26 +200,4 @@ def test_line_scoop_from_points(sample_dataframe):
         "crossing_x",
         "crossing_y",
         "dist",
-    ]  # Expected column names in the DataFrame
-
-
-def test_contributing_points(sample_dataframedist):
-    # Test the contributing_points method
-
-    # Create an instance of LineScoop
-    line_scoop = LineScoop(sample_dataframedist, delta=0.11)
-
-    # Set two points to create a line segment
-    line_scoop.p1 = (0.0, 5)
-    line_scoop.p2 = (10, 5.0)
-
-    # Get the contributing points
-    x_values, z_values, a, b, columns = line_scoop.line_scoop_from_points()
-    x_values, y_values = line_scoop.contributing_points()
-
-    # Perform assertions to check if the results are as expected
-    assert len(x_values) == 4  # Expected number of contributing points along the X-axis
-    assert len(y_values) == 4  # Expected number of contributing points along the Y-axis
-
-    assert x_values == [0, 0, 2, 2]
-    assert y_values == [5, 5, 6, 4]
+    ]
