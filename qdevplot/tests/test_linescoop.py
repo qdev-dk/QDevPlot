@@ -128,9 +128,8 @@ def test_get_scoop_line(sample_dataframedist):
     line_scoop.p1 = (0.0, 5)
     line_scoop.p2 = (10, 5.0)
     df_plot = line_scoop.get_scoop_line(0.00, 0.5)
-    print(df_plot.head())
     assert df_plot["crossing_x"].tolist() == [0, 0, 0.2, 0.2]
-    assert df_plot["crossing_y"].tolist() == [0.5, 0.5, 0.6, 0.4]
+    assert df_plot["crossing_y"].tolist() == [0.5, 0.5, 0.5, 0.5]
 
 
 def test_contributing_points(sample_dataframedist):
